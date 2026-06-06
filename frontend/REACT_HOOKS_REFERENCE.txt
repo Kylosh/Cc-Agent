@@ -1,0 +1,297 @@
+REACT HOOKS IMPLEMENTATION REFERENCE
+=====================================
+
+1. CART STATE MANAGEMENT (App.js)
+----------------------------------
+const [cartItems, setCartItems] = useState([]);
+const [isCartOpen, setIsCartOpen] = useState(false);
+
+useEffect(() => {
+  const savedCart = localStorage.getItem('cart');
+  if (savedCart) {
+    try {
+      setCartItems(JSON.parse(savedCart));
+    } catch (err) {
+      console.error('Failed to load cart:', err);
+    }
+  }
+}, []);
+
+useEffect(() => {
+  localStorage.setItem('cart', JSON.stringify(cartItems));
+}, [cartItems]);
+
+2. ADD TO CART LOGIC (App.js)
+------------------------------
+handleAddToCart(product) {
+  - Check if product already exists in cart
+  - If exists: increment quantity
+  - If new: add product with quantity = 1
+  - Auto-open cart sidebar
+}
+
+3. REMOVE FROM CART (App.js)
+----------------------------
+handleRemoveFromCart(productId) {
+  setCartItems(prev => prev.filter(item => item.id !== productId));
+}
+
+4. UPDATE QUANTITY (App.js)
+---------------------------
+handleUpdateQuantity(productId, newQuantity) {
+  - If newQuantity <= 0: remove from cart
+  - Otherwise: update item quantity
+}
+
+5. HEADER COMPONENT (components/Header.js)
+------------------------------------------
+Features:
+- Logo with emoji icon
+- Navigation links
+- Cart button with badge showing item count
+- Mobile hamburger menu toggle
+- Responsive design
+
+State: isMenuOpen (for mobile menu)
+
+Props:
+- cartCount: number
+- onCartClick: function
+
+6. PRODUCT CARD (components/ProductCard.js)
+------------------------------------------
+Features:
+- Displays product image/emoji
+- Shows name, description, price
+- Shows original price with strikethrough if discount
+- "Add to Cart" button on overlay
+- Links to product detail page
+
+Props:
+- product: { id, name, description, price, originalPrice?, emoji, ... }
+- onAddToCart: function
+
+7. SHOPPING CART SIDEBAR (components/ShoppingCart.js)
+----------------------------------------------------
+Features:
+- Show/hide with isOpen prop
+- Dark overlay backdrop when open
+- Item list with quantities
+- Quantity +/- buttons
+- Remove item buttons
+- Order summary (subtotal, shipping, total)
+- Empty state with continue shopping link
+- Checkout button
+
+Props:
+- items: array of cart items
+- isOpen: boolean
+- onClose: function
+- onUpdateQuantity: function(itemId, quantity)
+- onRemove: function(itemId)
+
+8. HOME PAGE (pages/Home.js)
+---------------------------
+State: None (stateless component)
+
+Features:
+- Hero section
+- Featured products grid (4 products)
+- Features showcase (4 feature cards)
+- CTA section
+
+Props:
+- onAddToCart: function
+
+9. PRODUCTS PAGE (pages/Products.js)
+-----------------------------------
+State:
+- sortBy: 'popularity' | 'price-low' | 'price-high' | 'name'
+
+Features:
+- Product grid with 8 products
+- Sort dropdown with 4 options
+- Product count display
+- Responsive layout
+
+Props:
+- onAddToCart: function
+
+10. PRODUCT DETAIL PAGE (pages/ProductDetail.js)
+-----------------------------------------------
+State:
+- quantity: number (1-99)
+
+Features:
+- Product emoji display
+- Name, rating, review count
+- Price with discount calculation
+- Product details list
+- Quantity selector
+- Add to cart button
+- Shipping info display
+
+URL Params:
+- id: product ID
+
+Props:
+- onAddToCart: function
+
+11. CHECKOUT PAGE (pages/Checkout.js)
+------------------------------------
+State:
+- formData: {
+    name, email, phone, address, city, zipcode
+  }
+- isProcessing: boolean (during form submission)
+- orderPlaced: boolean (success screen)
+
+Features:
+- Order summary with items
+- Shipping cost calculation
+- Tax calculation (10%)
+- Delivery form with validation
+- Processing state UI
+- Success screen with order number
+- Empty cart error handling
+
+Props:
+- cartItems: array
+
+Calculations:
+- subtotal = sum of (price * quantity)
+- tax = subtotal * 0.1
+- total = subtotal + tax + shipping
+
+12. GLOBAL STYLES (index.css)
+-----------------------------
+CSS Variables:
+- --primary-color: #ff6b6b
+- --secondary-color: #4ecdc4
+- --text-color: #333
+- --light-bg: #f7f7f7
+- --border-color: #e0e0e0
+- --shadow: 0 2px 8px rgba(0, 0, 0, 0.1)
+- --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15)
+
+Utility Classes:
+- .container: max-width 1200px, centered, padded
+- .btn-primary: red button with hover effects
+- .btn-secondary: teal button with hover effects
+- .section-title: centered, large font
+
+ROUTING STRUCTURE (App.js with React Router v6)
+===============================================
+
+Routes:
+1. / -> Home component
+2. /products -> Products component
+3. /product/:id -> ProductDetail component
+4. /checkout -> Checkout component
+
+Navigation:
+- Link components throughout for navigation
+- useNavigate hook in Checkout for navigation after order
+- useParams hook in ProductDetail for product ID
+
+FORM HANDLING (Checkout.js)
+==========================
+
+Form Fields:
+- name (text, required)
+- email (email, required)
+- phone (tel, required)
+- address (text, required)
+- city (text, required)
+- zipcode (text, required)
+
+Validation:
+- HTML5 required attribute
+- Form submission prevents default
+- Processing state during submission
+
+Success Flow:
+1. User fills form and clicks submit
+2. isProcessing = true (button disabled, loading state)
+3. Simulate API call with setTimeout (1500ms)
+4. orderPlaced = true (show success screen)
+5. Display order number (Date.now())
+6. Show shipping info
+7. "Return to Home" button to navigate back
+
+PERFORMANCE CONSIDERATIONS
+==========================
+
+1. useEffect dependencies:
+   - Cart persistence only runs when cartItems change
+   - Prevents infinite loops
+
+2. Props drilling:
+   - onAddToCart passed down to child components
+   - More prop drilling could be replaced with useContext
+
+3. Memoization:
+   - ProductCard could use React.memo for optimization
+   - Not critical for this app size
+
+ACCESSIBILITY FEATURES
+======================
+
+1. aria-label on buttons:
+   - Cart button
+   - Menu toggle
+   - Close buttons
+
+2. Semantic HTML:
+   - <main>, <section>, <header>, <nav>
+   - Form labels linked to inputs with htmlFor
+
+3. Form validation:
+   - Required fields
+   - Type validation (email, tel)
+
+RESPONSIVE DESIGN
+=================
+
+Mobile-First:
+- @media (max-width: 768px) queries
+- Hamburger menu on mobile
+- Flexible grid layouts
+- Touch-friendly button sizes
+
+FUTURE IMPROVEMENTS
+===================
+
+1. Add useContext for cart state (avoid prop drilling)
+2. Add API integration with axios (backend calls)
+3. Add product filtering by category
+4. Add user authentication
+5. Add order history page
+6. Add product search functionality
+7. Add product reviews/ratings
+8. Add payment integration
+9. Add inventory management
+10. Add loading skeletons
+
+DEPENDENCIES USED
+=================
+
+React: 18.2.0
+- useState, useEffect hooks
+- React Router DOM: 6.8.0
+- useParams, useNavigate hooks
+- BrowserRouter, Routes, Route components
+- Link component for navigation
+
+Standard Libraries:
+- JSON for localStorage serialization
+- Array methods (map, filter, reduce)
+- Object spread operator
+
+NO EXTERNAL STATE MANAGEMENT:
+- No Redux
+- No Zustand
+- No Recoil
+- Pure React Hooks approach
+
+END OF REFERENCE

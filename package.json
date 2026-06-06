@@ -1,0 +1,15 @@
+{
+  "name": "fruit-delivery",
+  "version": "1.0.0",
+  "description": "Premium fruit delivery website with Apple-inspired design",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend & npm run dev --workspace=backend",
+    "build": "npm run build --workspaces",
+    "start": "npm start --workspace=backend"
+  }
+}
