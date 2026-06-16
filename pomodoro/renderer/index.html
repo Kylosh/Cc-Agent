@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>番茄时钟</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 自定义标题栏 -->
+  <div class="titlebar" id="titlebar">
+    <span class="app-title">🍅 番茄时钟</span>
+    <div class="win-controls">
+      <button id="btn-minimize" title="最小化">─</button>
+      <button id="btn-close" title="关闭">✕</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- 模式切换 -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="focus">专注</button>
+      <button class="mode-tab" data-mode="short">短休息</button>
+      <button class="mode-tab" data-mode="long">长休息</button>
+    </div>
+
+    <!-- 计时器 -->
+    <div class="timer-section">
+      <div class="timer-ring-wrap">
+        <svg class="timer-ring" viewBox="0 0 200 200">
+          <circle class="ring-bg" cx="100" cy="100" r="88" />
+          <circle class="ring-progress" id="ring-progress" cx="100" cy="100" r="88" />
+        </svg>
+        <div class="timer-center">
+          <div class="timer-display" id="timer-display">25:00</div>
+          <div class="timer-label" id="timer-label">专注时间</div>
+        </div>
+      </div>
+
+      <div class="pomodoro-dots" id="pomodoro-dots">
+        <span class="dot" data-i="0"></span>
+        <span class="dot" data-i="1"></span>
+        <span class="dot" data-i="2"></span>
+        <span class="dot" data-i="3"></span>
+      </div>
+
+      <div class="controls">
+        <button class="btn-icon" id="btn-reset" title="重置">↺</button>
+        <button class="btn-primary" id="btn-start">开始</button>
+        <button class="btn-icon" id="btn-skip" title="跳过">⏭</button>
+      </div>
+    </div>
+
+    <!-- 任务管理 -->
+    <div class="tasks-section">
+      <div class="tasks-header">
+        <span class="tasks-title">今日任务</span>
+        <span class="tasks-count" id="tasks-count">0 个任务</span>
+      </div>
+
+      <div class="task-input-wrap">
+        <input type="text" id="task-input" placeholder="添加新任务..." maxlength="50" />
+        <button id="btn-add-task">+</button>
+      </div>
+
+      <ul class="task-list" id="task-list"></ul>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
